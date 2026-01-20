@@ -160,9 +160,12 @@ export default function App() {
       {/* HEADER */}
       {view === 'home' && (
         <div className="bg-white px-6 pt-14 pb-4 flex justify-between items-center border-b border-slate-50">
-          <div>
-            <h1 className="text-2xl font-black text-[#1B4332]">Çiçeğim</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gemini AI Destekli</p>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Çiçeğim Logo" className="w-12 h-12 rounded-2xl" />
+            <div>
+              <h1 className="text-2xl font-black text-[#1B4332]">Çiçeğim</h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gemini AI Destekli</p>
+            </div>
           </div>
           <button className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
             <Settings size={18} className="text-slate-600" />

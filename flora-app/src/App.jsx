@@ -6,16 +6,16 @@ import {
   Loader2, RefreshCcw, Calendar, Info, X, Image
 } from 'lucide-react';
 
-// --- GEMINI API AYARLARI ---
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
-const GEMINI_MODEL = "gemini-2.0-flash-exp";
+// --- ANTHROPIC API AYARLARI ---
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY || "";
+const CLAUDE_MODEL = "claude-3-5-sonnet-20241022";
 
 /**
- * GEMINI API SERVİSİ
+ * CLAUDE API SERVİSİ
  * Görüntüyü analiz eder ve yapılandırılmış JSON döner.
  */
-const identifyWithGemini = async (base64Image) => {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+const identifyWithClaude = async (base64Image) => {
+  const url = "https://api.anthropic.com/v1/messages";
 
   const systemPrompt = `Bir bitki uzmanısın. Gönderilen fotoğraftaki bitkiyi tanı.
   Yanıtı sadece şu JSON formatında ver:
@@ -27,24 +27,31 @@ const identifyWithGemini = async (base64Image) => {
     "careTips": "Kısa bakım önerisi"
   }`;
 
+  // Base64 verisini temizle (data:image/jpeg;base64, kısmını kaldır)
+  const base64Data = base64Image.includes(',')
+    ? base64Image.split(',')[1]
+    : base64Image;
+
   const payload = {
-    contents: [{
-      parts: [
-        { text: systemPrompt },
+    model: CLAUDE_MODEL,
+    max_tokens: 2048,
+    messages: [{
+      role: "user",
+      content: [
         {
-          inlineData: {
-            mimeType: "image/jpeg",
-            data: base64Image.split(',')[1] || base64Image
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: "image/jpeg",
+            data: base64Data
           }
+        },
+        {
+          type: "text",
+          text: systemPrompt
         }
       ]
-    }],
-    generationConfig: {
-      temperature: 0.4,
-      topK: 32,
-      topP: 1,
-      maxOutputTokens: 2048,
-    }
+    }]
   };
 
   // Üstel geri çekilme ile hata yönetimi (Exponential Backoff)
@@ -52,7 +59,11 @@ const identifyWithGemini = async (base64Image) => {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01"
+        },
         body: JSON.stringify(payload)
       });
 
@@ -62,10 +73,10 @@ const identifyWithGemini = async (base64Image) => {
       }
 
       const result = await response.json();
-      const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      const text = result.content?.[0]?.text;
 
       if (!text) {
-        throw new Error("Gemini'den yanıt alınamadı");
+        throw new Error("Claude'dan yanıt alınamadı");
       }
 
       // JSON'u çıkar (markdown code block içinde olabilir)
@@ -117,7 +128,7 @@ export default function App() {
       reader.onloadend = async () => {
         const base64 = reader.result;
         try {
-          const result = await identifyWithGemini(base64);
+          const result = await identifyWithClaude(base64);
           const newPlant = {
             id: Date.now().toString(),
             ...result,
@@ -128,7 +139,7 @@ export default function App() {
           setLoading(false);
           setView('home');
         } catch (err) {
-          console.error('Gemini API Error:', err);
+          console.error('Claude API Error:', err);
           setError(err.message || "Bitki tanınamadı. Lütfen daha net bir fotoğraf deneyin.");
           setLoading(false);
         }
@@ -167,7 +178,7 @@ export default function App() {
             <img src="/logo.png" alt="Çiçeğim Logo" className="w-12 h-12 rounded-2xl" />
             <div>
               <h1 className="text-2xl font-black text-[#1B4332]">Çiçeğim</h1>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gemini AI Destekli</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Claude AI Destekli</p>
             </div>
           </div>
           <button className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center">
@@ -190,12 +201,12 @@ export default function App() {
             </div>
 
             {/* Bilgi Banner */}
-            {!GEMINI_API_KEY && (
+            {!ANTHROPIC_API_KEY && (
               <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
                 <AlertCircle className="text-amber-600 flex-shrink-0" size={20} />
                 <div className="text-xs text-amber-800">
                   <p className="font-bold mb-1">API Anahtarı Gerekli</p>
-                  <p>Gemini API anahtarınızı .env dosyasına ekleyin (VITE_GEMINI_API_KEY)</p>
+                  <p>Anthropic API anahtarınızı .env dosyasına ekleyin (VITE_ANTHROPIC_API_KEY)</p>
                 </div>
               </div>
             )}
@@ -283,7 +294,7 @@ export default function App() {
                   <Info size={18} className="text-[#1B4332]" /> Bakım Notu
                 </h4>
                 <p className="text-sm text-slate-600 leading-relaxed bg-green-50/50 p-4 rounded-2xl italic">
-                  "{selectedPlant.careTips || "Gemini tarafından analiz ediliyor..."}"
+                  "{selectedPlant.careTips || "Claude tarafından analiz ediliyor..."}"
                 </p>
               </div>
 
@@ -309,7 +320,7 @@ export default function App() {
       {loading && (
         <div className="fixed inset-0 bg-[#1B4332]/90 backdrop-blur-xl z-[100] flex flex-col items-center justify-center text-white p-10 text-center">
           <Loader2 className="animate-spin mb-6" size={48} />
-          <h3 className="text-2xl font-black mb-2">Gemini Analiz Ediyor</h3>
+          <h3 className="text-2xl font-black mb-2">Claude Analiz Ediyor</h3>
           <p className="text-green-200 text-sm">Bitki veritabanı taranıyor, hastalıklar kontrol ediliyor...</p>
         </div>
       )}

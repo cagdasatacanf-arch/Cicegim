@@ -1,0 +1,29 @@
+name: Android APK Yapıcı
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          
+      - name: Bağımlılıkları Yükle
+        working-directory: ./Cicegim  # <-- Düzeltildi
+        run: flutter pub get
+        
+      - name: APK Oluştur
+        working-directory: ./Cicegim  # <-- Düzeltildi
+        run: flutter build apk --release --no-tree-shake-icons
+        
+      - name: APK'yı Yükle (İndirilebilir Yap)
+        uses: actions/upload-artifact@v3
+        with:
+          name: cicegim-apk
+          path: Cicegim/build/app/outputs/flutter-apk/app-release.apk # <-- Düzeltildi

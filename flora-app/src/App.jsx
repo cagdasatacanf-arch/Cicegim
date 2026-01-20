@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Leaf, Droplets, Camera, Plus, Search, Settings,
   CheckCircle2, AlertCircle, ChevronRight,
   ArrowLeft, Trash2, ShieldCheck, Thermometer, Sun,
-  Loader2, RefreshCcw, Calendar, Info, X
+  Loader2, RefreshCcw, Calendar, Info, X, Image
 } from 'lucide-react';
 
 // --- GEMINI API AYARLARI ---
@@ -96,6 +96,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [error, setError] = useState(null);
+  const [showPhotoMenu, setShowPhotoMenu] = useState(false);
+  const cameraInputRef = useRef(null);
+  const galleryInputRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem('cicegim_gemini_db', JSON.stringify(plants));
@@ -321,22 +324,84 @@ export default function App() {
         </div>
       )}
 
+      {/* PHOTO MENU MODAL */}
+      {showPhotoMenu && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end animate-in fade-in"
+          onClick={() => setShowPhotoMenu(false)}
+        >
+          <div
+            className="bg-white w-full rounded-t-[2.5rem] p-6 pb-10 animate-in slide-in-from-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-6"></div>
+            <h3 className="text-xl font-black text-slate-800 mb-4 text-center">Fotoğraf Seç</h3>
+
+            <div className="space-y-3">
+              {/* Camera Option */}
+              <button
+                onClick={() => {
+                  cameraInputRef.current?.click();
+                  setShowPhotoMenu(false);
+                }}
+                className="w-full bg-[#1B4332] text-white py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:bg-[#2D6A4F] transition-all active:scale-[0.98]"
+              >
+                <Camera size={24} />
+                Fotoğraf Çek
+              </button>
+
+              {/* Gallery Option */}
+              <button
+                onClick={() => {
+                  galleryInputRef.current?.click();
+                  setShowPhotoMenu(false);
+                }}
+                className="w-full bg-slate-100 text-slate-800 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-slate-200 transition-all active:scale-[0.98]"
+              >
+                <Image size={24} />
+                Galeriden Seç
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowPhotoMenu(false)}
+              className="w-full text-slate-400 font-bold py-3 mt-4"
+            >
+              İptal
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* HIDDEN FILE INPUTS */}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={handleIdentify}
+      />
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleIdentify}
+      />
+
       {/* BOTTOM NAV */}
       {view === 'home' && (
         <div className="bg-white border-t border-slate-100 px-12 py-6 pb-10 flex justify-between items-center fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
           <button className="text-[#1B4332]">
             <Leaf size={28} fill="currentColor" />
           </button>
-          <label className="bg-[#1B4332] text-white w-16 h-16 rounded-full flex items-center justify-center -mt-16 border-8 border-[#F8FAF8] shadow-2xl cursor-pointer hover:scale-105 transition-transform active:scale-95">
+          <button
+            onClick={() => setShowPhotoMenu(true)}
+            className="bg-[#1B4332] text-white w-16 h-16 rounded-full flex items-center justify-center -mt-16 border-8 border-[#F8FAF8] shadow-2xl hover:scale-105 transition-transform active:scale-95"
+          >
             <Plus size={32} />
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={handleIdentify}
-            />
-          </label>
+          </button>
           <button className="text-slate-300">
             <Calendar size={28} />
           </button>

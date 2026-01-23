@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Leaf, Droplets, Camera, Plus, Search, Settings,
-  CheckCircle2, AlertCircle, ChevronRight,
+  CheckCircle2, AlertCircle, ChevronRight, ChevronLeft,
   ArrowLeft, Trash2, ShieldCheck, Thermometer, Sun,
-  Loader2, RefreshCcw, Calendar, Info, X, Image
+  Loader2, RefreshCcw, Calendar, Info, X, Image,
+  Home, Flower2, Check, Sparkles
 } from 'lucide-react';
 
 // --- GEMINI API AYARLARI ---
@@ -97,6 +98,8 @@ export default function App() {
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [error, setError] = useState(null);
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [completedTasks, setCompletedTasks] = useState([]);
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
 
@@ -155,6 +158,60 @@ export default function App() {
   const deletePlant = (id) => {
     setPlants(plants.filter(p => p.id !== id));
     setView('home');
+  };
+
+  // Calendar Helper Functions
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    return { firstDay, daysInMonth };
+  };
+
+  const getTurkishMonth = (date) => {
+    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    return `${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  const changeMonth = (offset) => {
+    const newDate = new Date(selectedDate);
+    newDate.setMonth(newDate.getMonth() + offset);
+    setSelectedDate(newDate);
+  };
+
+  const getTodaysTasks = () => {
+    const today = new Date();
+    return plants.filter(plant => {
+      const lastWatered = new Date(plant.lastWatered);
+      const daysSinceWatered = Math.floor((today - lastWatered) / (1000 * 60 * 60 * 24));
+      return daysSinceWatered >= plant.wateringInterval - 1; // Due today or overdue
+    }).map(plant => ({
+      ...plant,
+      taskType: getWateringStatus(plant) === 'urgent' ? 'Sulama Zamanı' : 'Kontrol Et',
+      taskIcon: getWateringStatus(plant) === 'urgent' ? 'water' : 'check'
+    }));
+  };
+
+  const toggleTaskComplete = (plantId) => {
+    if (completedTasks.includes(plantId)) {
+      setCompletedTasks(completedTasks.filter(id => id !== plantId));
+    } else {
+      setCompletedTasks([...completedTasks, plantId]);
+      waterPlant(plantId);
+    }
+  };
+
+  const getDateHasTasks = (day) => {
+    // Check if any plant needs watering on this day
+    const checkDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+    return plants.some(plant => {
+      const lastWatered = new Date(plant.lastWatered);
+      const nextWatering = new Date(lastWatered);
+      nextWatering.setDate(nextWatering.getDate() + plant.wateringInterval);
+      return nextWatering.toDateString() === checkDate.toDateString();
+    });
   };
 
   return (
@@ -301,6 +358,142 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* SULAMA TAKVİMİ (WATERING SCHEDULE) VIEW */}
+        {view === 'schedule' && (
+          <div className="animate-in slide-in-from-right duration-300 bg-white min-h-screen">
+            {/* Header */}
+            <div className="bg-white px-6 pt-14 pb-4 flex justify-between items-center border-b border-slate-100">
+              <button
+                onClick={() => setView('home')}
+                className="w-10 h-10 flex items-center justify-center text-slate-600 hover:text-slate-800"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <h1 className="text-xl font-bold text-slate-800">Sulama Takvimi</h1>
+              <button className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-600 transition-colors">
+                <Plus size={20} />
+              </button>
+            </div>
+
+            {/* Calendar Section */}
+            <div className="p-6">
+              {/* Month Navigation */}
+              <div className="flex items-center justify-between mb-6">
+                <button
+                  onClick={() => changeMonth(-1)}
+                  className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <h2 className="text-lg font-bold text-slate-800">{getTurkishMonth(selectedDate)}</h2>
+                <button
+                  onClick={() => changeMonth(1)}
+                  className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+
+              {/* Day Headers */}
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['PZR', 'PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT'].map(day => (
+                  <div key={day} className="text-center text-xs font-bold text-slate-400 py-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar Grid */}
+              <div className="grid grid-cols-7 gap-1">
+                {(() => {
+                  const { firstDay, daysInMonth } = getDaysInMonth(selectedDate);
+                  const today = new Date();
+                  const isCurrentMonth = today.getMonth() === selectedDate.getMonth() && today.getFullYear() === selectedDate.getFullYear();
+                  const cells = [];
+
+                  // Empty cells for days before first day of month
+                  for (let i = 0; i < firstDay; i++) {
+                    cells.push(<div key={`empty-${i}`} className="h-10"></div>);
+                  }
+
+                  // Day cells
+                  for (let day = 1; day <= daysInMonth; day++) {
+                    const isToday = isCurrentMonth && today.getDate() === day;
+                    const hasTasks = getDateHasTasks(day);
+
+                    cells.push(
+                      <div
+                        key={day}
+                        className={`h-10 flex flex-col items-center justify-center rounded-full cursor-pointer transition-all ${isToday
+                          ? 'bg-blue-500 text-white font-bold shadow-lg'
+                          : 'text-slate-700 hover:bg-slate-100'
+                          }`}
+                      >
+                        <span className="text-sm">{day}</span>
+                        {hasTasks && !isToday && (
+                          <div className="w-1 h-1 bg-blue-500 rounded-full mt-0.5"></div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return cells;
+                })()}
+              </div>
+            </div>
+
+            {/* Tasks for Today */}
+            <div className="px-6 pb-32">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-800">Bugünün Görevleri</h3>
+                <span className="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
+                  {getTodaysTasks().length} GÖREV
+                </span>
+              </div>
+
+              {getTodaysTasks().length === 0 ? (
+                <div className="text-center py-12 bg-slate-50 rounded-3xl">
+                  <Sparkles className="mx-auto text-green-400 mb-3" size={40} />
+                  <p className="text-slate-500 font-medium">Bugün görev yok!</p>
+                  <p className="text-slate-400 text-sm mt-1">Tüm bitkileriniz bakımlı</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {getTodaysTasks().map(task => (
+                    <div
+                      key={task.id}
+                      className={`bg-white border border-slate-100 p-4 rounded-2xl flex items-center gap-4 shadow-sm transition-all ${completedTasks.includes(task.id) ? 'opacity-50' : ''
+                        }`}
+                    >
+                      <img
+                        src={task.image}
+                        alt={task.commonName}
+                        className="w-14 h-14 rounded-xl object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-slate-800 truncate">{task.commonName}</h4>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Droplets size={14} className="text-blue-500" />
+                          <span className="text-sm text-slate-500">{task.taskType}</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => toggleTaskComplete(task.id)}
+                        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${completedTasks.includes(task.id)
+                          ? 'bg-green-500 border-green-500 text-white'
+                          : 'border-blue-300 hover:border-blue-500'
+                          }`}
+                      >
+                        {completedTasks.includes(task.id) && <Check size={16} />}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* LOADING OVERLAY */}
@@ -389,19 +582,52 @@ export default function App() {
       />
 
       {/* BOTTOM NAV */}
-      {view === 'home' && (
-        <div className="bg-white border-t border-slate-100 px-12 py-6 pb-10 flex justify-between items-center fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
-          <button className="text-[#1B4332]">
-            <Leaf size={28} fill="currentColor" />
+      {(view === 'home' || view === 'schedule') && (
+        <div className="bg-white border-t border-slate-100 px-6 py-4 pb-8 flex justify-around items-center fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+          {/* Home Button */}
+          <button
+            onClick={() => setView('home')}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${view === 'home' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'
+              }`}
+          >
+            <Home size={24} />
+            <span className="text-xs font-semibold">Ana Sayfa</span>
           </button>
+
+          {/* Schedule Button */}
+          <button
+            onClick={() => setView('schedule')}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${view === 'schedule' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'
+              }`}
+          >
+            <Calendar size={24} />
+            <span className="text-xs font-semibold">Takvim</span>
+          </button>
+
+          {/* Add Plant FAB */}
           <button
             onClick={() => setShowPhotoMenu(true)}
-            className="bg-[#1B4332] text-white w-16 h-16 rounded-full flex items-center justify-center -mt-16 border-8 border-[#F8FAF8] shadow-2xl hover:scale-105 transition-transform active:scale-95"
+            className="bg-[#1B4332] text-white w-14 h-14 rounded-full flex items-center justify-center -mt-10 border-4 border-white shadow-xl hover:scale-105 transition-transform active:scale-95"
           >
-            <Plus size={32} />
+            <Plus size={28} />
           </button>
-          <button className="text-slate-300">
-            <Calendar size={28} />
+
+          {/* My Plants Button */}
+          <button
+            onClick={() => setView('home')}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${view === 'home' ? 'text-slate-400 hover:text-slate-600' : 'text-slate-400 hover:text-slate-600'
+              }`}
+          >
+            <Flower2 size={24} />
+            <span className="text-xs font-semibold">Bitkilerim</span>
+          </button>
+
+          {/* Settings Button */}
+          <button
+            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl text-slate-400 hover:text-slate-600 transition-all"
+          >
+            <Settings size={24} />
+            <span className="text-xs font-semibold">Ayarlar</span>
           </button>
         </div>
       )}

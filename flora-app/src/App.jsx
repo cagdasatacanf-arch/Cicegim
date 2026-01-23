@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertCircle, ChevronRight, ChevronLeft,
   ArrowLeft, Trash2, ShieldCheck, Thermometer, Sun,
   Loader2, RefreshCcw, Calendar, Info, X, Image,
-  Home, Flower2, Check, Sparkles
+  Home, Flower2, Check, Sparkles, Share2, Scissors, Sprout, ShoppingCart, Activity
 } from 'lucide-react';
 
 // --- GEMINI API AYARLARI ---
@@ -18,15 +18,28 @@ const GEMINI_MODEL = "gemini-2.0-flash-exp";
 const identifyWithGemini = async (base64Image) => {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-  const systemPrompt = `Bir bitki uzmanısın. Gönderilen fotoğraftaki bitkiyi tanı.
+  const systemPrompt = `Bir bitki uzmanısın. Gönderilen fotoğraftaki bitkiyi tanı ve sağlık durumunu analiz et. 
   Yanıtı sadece şu JSON formatında ver:
   {
     "commonName": "Bitki Türkçe Adı",
     "scientificName": "Scientific Name",
     "wateringInterval": 7,
-    "healthStatus": "İyi/Sorunlu",
-    "careTips": "Kısa bakım önerisi"
-  }`;
+    "healthStatus": "İyi" veya "Sorunlu",
+    "careTips": "Kısa bakım önerisi",
+    "treatmentPlan": {
+      "problemName": "Hastalık/Sorun Adı (Örn: Kök Çürümesi)",
+      "severity": "Yüksek" veya "Orta" veya "Düşük",
+      "confidence": 95,
+      "recoveryTime": "3 Hafta",
+      "steps": [
+        { "title": "Adım Başlığı", "description": "Detaylı açıklama" }
+      ],
+      "products": [
+        { "name": "Ürün Adı", "price": "₺120" }
+      ]
+    }
+  }
+  Not: Eğer bitki sağlıklıysa ("İyi"), treatmentPlan null olabilir.`;
 
   const payload = {
     contents: [{
@@ -349,6 +362,16 @@ export default function App() {
                 SULANDI OLARAK İŞARETLE
               </button>
 
+              {selectedPlant.healthStatus === "Sorunlu" && selectedPlant.treatmentPlan && (
+                <button
+                  onClick={() => setView('treatment')}
+                  className="w-full bg-blue-600 text-white py-4 rounded-5xl font-black text-lg shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] mb-4 flex items-center justify-center gap-2"
+                >
+                  <Activity size={20} />
+                  TEDAVİ PLANINI GÖRÜNTÜLE
+                </button>
+              )}
+
               <button
                 onClick={() => deletePlant(selectedPlant.id)}
                 className="w-full text-red-400 text-xs font-bold py-4 flex items-center justify-center gap-1 hover:text-red-500 transition-colors"
@@ -491,6 +514,112 @@ export default function App() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* TEDAVİ PLANI (TREATMENT PLAN) VIEW */}
+        {view === 'treatment' && selectedPlant?.treatmentPlan && (
+          <div className="animate-in slide-in-from-right duration-300 bg-[#F8FAF8] min-h-screen pb-32">
+            {/* Header */}
+            <div className="bg-white px-6 pt-14 pb-4 flex justify-between items-center border-b border-slate-100 sticky top-0 z-50">
+              <button
+                onClick={() => setView('detail')}
+                className="w-10 h-10 flex items-center justify-center text-slate-600 hover:text-slate-800"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <h1 className="text-xl font-bold text-slate-800">Tedavi Planı</h1>
+              <button className="w-10 h-10 flex items-center justify-center text-slate-600">
+                <Share2 size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Diagnosis Summary Card */}
+              <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 flex gap-4">
+                <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
+                  <img src={selectedPlant.image} alt="Sorunlu Bitki" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-black text-xl text-slate-800">{selectedPlant.treatmentPlan.problemName}</h3>
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-lg ${selectedPlant.treatmentPlan.severity === 'Yüksek' ? 'bg-red-50 text-red-500' : 'bg-orange-50 text-orange-500'
+                      }`}>
+                      {selectedPlant.treatmentPlan.severity.toUpperCase()} ŞİDDET
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mb-2">
+                    Teşhis: {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })} • %{selectedPlant.treatmentPlan.confidence} Doğruluk
+                  </p>
+                  <div className="flex items-center gap-2 text-blue-500 text-xs font-bold">
+                    <RefreshCcw size={14} />
+                    <span>Tahmini İyileşme: {selectedPlant.treatmentPlan.recoveryTime}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step-by-Step Treatment */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-black text-slate-800">Adım Adım Tedavi</h3>
+                <p className="text-sm text-slate-400 -mt-2">Bitkinizi kurtarmak için bu adımları izleyin</p>
+
+                <div className="space-y-6 relative ml-4">
+                  {/* Vertical Line */}
+                  <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-blue-100 z-0"></div>
+
+                  {selectedPlant.treatmentPlan.steps.map((step, idx) => (
+                    <div key={idx} className="relative z-10 flex gap-4">
+                      <div className="w-9 h-9 flex-shrink-0 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                        {idx + 1}
+                      </div>
+                      <div className="bg-white p-4 rounded-2xl flex-1 shadow-sm border border-slate-50">
+                        <h4 className="font-bold text-slate-800 mb-1 flex items-center gap-2">
+                          {idx === 0 && <Scissors size={14} className="text-blue-500" />}
+                          {idx === 1 && <Sprout size={14} className="text-blue-500" />}
+                          {idx === 2 && <Droplets size={14} className="text-blue-500" />}
+                          {step.title}
+                        </h4>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recommended Products */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-black text-slate-800">Önerilen Ürünler</h3>
+                <div className="space-y-3">
+                  {selectedPlant.treatmentPlan.products.map((product, idx) => (
+                    <div key={idx} className="bg-white p-3 rounded-2xl flex items-center gap-4 border border-slate-100 shadow-sm">
+                      <div className="w-14 h-14 bg-slate-50 rounded-xl flex items-center justify-center text-[#1B4332]">
+                        <Flower2 size={24} />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-sm text-slate-800">{product.name}</h4>
+                        <p className="text-blue-500 font-bold text-xs">{product.price}</p>
+                      </div>
+                      <button className="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                        <ShoppingCart size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Action Button */}
+            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-6 bg-white/80 backdrop-blur-md border-t border-slate-50 z-40">
+              <button
+                onClick={() => setView('detail')}
+                className="w-full bg-blue-600 text-white py-4 rounded-full font-black text-lg shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+              >
+                <Activity size={24} />
+                İyileşme Sürecini Takip Et
+              </button>
             </div>
           </div>
         )}

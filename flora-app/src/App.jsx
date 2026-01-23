@@ -17,14 +17,23 @@ const GEMINI_MODEL = "gemini-2.0-flash-exp";
 const identifyWithGemini = async (base64Image) => {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-  const systemPrompt = `Bir bitki uzmanısın. Gönderilen fotoğraftaki bitkiyi tanı.
+  const systemPrompt = `Bir bitki uzmanısın. Gönderilen fotoğraftaki bitkiyi tanı ve detaylı bilgi ver.
   Yanıtı sadece şu JSON formatında ver:
   {
     "commonName": "Bitki Türkçe Adı",
     "scientificName": "Scientific Name",
+    "family": "Bitki Ailesi (örn: Cactaceae, Araceae)",
+    "origin": "Orijin bölgeler (örn: Güney Amerika tropikal ormanları, Akdeniz havzası)",
+    "description": "Bitkinin genel özellikleri ve görünümü hakkında 2-3 cümlelik açıklama",
     "wateringInterval": 7,
+    "lightRequirement": "Işık ihtiyacı (örn: Parlak dolaylı ışık, Gölge, Doğrudan güneş)",
+    "temperature": "İdeal sıcaklık aralığı (örn: 18-24°C)",
+    "humidity": "Nem ihtiyacı (örn: Yüksek, Orta, Düşük)",
+    "toxicity": "Toksiklik durumu (örn: Evcil hayvanlar için zehirli, İnsan dostu, Zararsız)",
+    "growthRate": "Büyüme hızı (örn: Hızlı, Orta, Yavaş)",
     "healthStatus": "İyi/Sorunlu",
-    "careTips": "Kısa bakım önerisi"
+    "careTips": "Önemli bakım önerileri",
+    "commonIssues": "Sık karşılaşılan sorunlar ve çözümleri"
   }`;
 
   const payload = {
@@ -256,50 +265,144 @@ export default function App() {
                 <ArrowLeft size={24} />
               </button>
             </div>
-            <div className="px-8 -mt-12 relative z-10 bg-white rounded-t-[3rem] pt-8">
-              <h2 className="text-3xl font-black text-[#1B4332] mb-1">{selectedPlant.commonName}</h2>
-              <p className="text-slate-400 italic mb-6">{selectedPlant.scientificName}</p>
+            <div className="px-8 -mt-12 relative z-10 bg-white rounded-t-[3rem] pt-8 space-y-6">
+              {/* Plant Name & Scientific Info */}
+              <div>
+                <h2 className="text-3xl font-black text-[#1B4332] mb-1">{selectedPlant.commonName}</h2>
+                <p className="text-slate-400 italic mb-2">{selectedPlant.scientificName}</p>
+                {selectedPlant.family && (
+                  <div className="inline-flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full">
+                    <Leaf size={14} className="text-green-600" />
+                    <span className="text-xs font-bold text-green-700">{selectedPlant.family}</span>
+                  </div>
+                )}
+              </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-8">
-                <div className="bg-slate-50 p-4 rounded-3xl text-center">
-                  <Droplets size={20} className="mx-auto mb-1 text-blue-500" />
-                  <p className="text-[10px] text-slate-400 uppercase font-black">SU</p>
-                  <p className="text-xs font-bold mt-1">{selectedPlant.wateringInterval} Gün</p>
+              {/* Origin Section */}
+              {selectedPlant.origin && (
+                <div className="bg-gradient-to-br from-[#1B4332] to-[#2D6A4F] p-5 rounded-3xl text-white">
+                  <h4 className="font-black text-sm uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <span className="text-xl">🌍</span> Orijin
+                  </h4>
+                  <p className="text-green-100 text-sm leading-relaxed">{selectedPlant.origin}</p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-3xl text-center">
-                  <Thermometer size={20} className="mx-auto mb-1 text-red-400" />
-                  <p className="text-[10px] text-slate-400 uppercase font-black">ISI</p>
-                  <p className="text-xs font-bold mt-1">18-25°C</p>
+              )}
+
+              {/* Description */}
+              {selectedPlant.description && (
+                <div className="space-y-2">
+                  <h4 className="font-bold flex items-center gap-2 text-slate-800">
+                    <Info size={18} className="text-[#1B4332]" /> Hakkında
+                  </h4>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl">
+                    {selectedPlant.description}
+                  </p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-3xl text-center">
-                  <ShieldCheck size={20} className="mx-auto mb-1 text-green-500" />
-                  <p className="text-[10px] text-slate-400 uppercase font-black">DURUM</p>
-                  <p className="text-xs font-bold mt-1">{selectedPlant.healthStatus || 'İyi'}</p>
+              )}
+
+              {/* Care Requirements Grid */}
+              <div className="space-y-3">
+                <h4 className="font-bold text-slate-800">Bakım Gereksinimleri</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-blue-50 p-4 rounded-2xl">
+                    <Droplets size={20} className="mb-2 text-blue-600" />
+                    <p className="text-[10px] text-blue-400 uppercase font-black mb-1">SULAMA</p>
+                    <p className="text-xs font-bold text-blue-900">{selectedPlant.wateringInterval} Günde Bir</p>
+                  </div>
+
+                  {selectedPlant.lightRequirement && (
+                    <div className="bg-amber-50 p-4 rounded-2xl">
+                      <Sun size={20} className="mb-2 text-amber-500" />
+                      <p className="text-[10px] text-amber-400 uppercase font-black mb-1">IŞIK</p>
+                      <p className="text-xs font-bold text-amber-900">{selectedPlant.lightRequirement}</p>
+                    </div>
+                  )}
+
+                  {selectedPlant.temperature && (
+                    <div className="bg-red-50 p-4 rounded-2xl">
+                      <Thermometer size={20} className="mb-2 text-red-500" />
+                      <p className="text-[10px] text-red-400 uppercase font-black mb-1">SICAKLIK</p>
+                      <p className="text-xs font-bold text-red-900">{selectedPlant.temperature}</p>
+                    </div>
+                  )}
+
+                  {selectedPlant.humidity && (
+                    <div className="bg-cyan-50 p-4 rounded-2xl">
+                      <Droplets size={20} className="mb-2 text-cyan-500" />
+                      <p className="text-[10px] text-cyan-400 uppercase font-black mb-1">NEM</p>
+                      <p className="text-xs font-bold text-cyan-900">{selectedPlant.humidity}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <h4 className="font-bold flex items-center gap-2">
-                  <Info size={18} className="text-[#1B4332]" /> Bakım Notu
-                </h4>
-                <p className="text-sm text-slate-600 leading-relaxed bg-green-50/50 p-4 rounded-2xl italic">
-                  "{selectedPlant.careTips || "Gemini tarafından analiz ediliyor..."}"
-                </p>
+              {/* Additional Info Cards */}
+              <div className="grid grid-cols-3 gap-3">
+                {selectedPlant.healthStatus && (
+                  <div className="bg-green-50 p-3 rounded-2xl text-center">
+                    <ShieldCheck size={18} className="mx-auto mb-1 text-green-600" />
+                    <p className="text-[9px] text-green-400 uppercase font-black">SAĞLIK</p>
+                    <p className="text-xs font-bold text-green-900 mt-1">{selectedPlant.healthStatus}</p>
+                  </div>
+                )}
+
+                {selectedPlant.growthRate && (
+                  <div className="bg-purple-50 p-3 rounded-2xl text-center">
+                    <span className="text-xl block mb-1">📈</span>
+                    <p className="text-[9px] text-purple-400 uppercase font-black">BÜYÜME</p>
+                    <p className="text-xs font-bold text-purple-900 mt-1">{selectedPlant.growthRate}</p>
+                  </div>
+                )}
+
+                {selectedPlant.toxicity && (
+                  <div className="bg-orange-50 p-3 rounded-2xl text-center">
+                    <AlertCircle size={18} className="mx-auto mb-1 text-orange-500" />
+                    <p className="text-[9px] text-orange-400 uppercase font-black">TOKSİSİTE</p>
+                    <p className="text-xs font-bold text-orange-900 mt-1 leading-tight">{selectedPlant.toxicity}</p>
+                  </div>
+                )}
               </div>
 
-              <button
-                onClick={() => waterPlant(selectedPlant.id)}
-                className="w-full bg-[#2D6A4F] text-white py-4 rounded-5xl font-black text-lg shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] mb-4"
-              >
-                SULANDI OLARAK İŞARETLE
-              </button>
+              {/* Care Tips */}
+              {selectedPlant.careTips && (
+                <div className="space-y-2">
+                  <h4 className="font-bold flex items-center gap-2 text-slate-800">
+                    <span className="text-lg">💡</span> Bakım İpuçları
+                  </h4>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-green-50/70 p-4 rounded-2xl border-l-4 border-green-500">
+                    {selectedPlant.careTips}
+                  </p>
+                </div>
+              )}
 
-              <button
-                onClick={() => deletePlant(selectedPlant.id)}
-                className="w-full text-red-400 text-xs font-bold py-4 flex items-center justify-center gap-1 hover:text-red-500 transition-colors"
-              >
-                <Trash2 size={14} /> Bitkiyi Sil
-              </button>
+              {/* Common Issues */}
+              {selectedPlant.commonIssues && (
+                <div className="space-y-2">
+                  <h4 className="font-bold flex items-center gap-2 text-slate-800">
+                    <AlertCircle size={18} className="text-amber-600" /> Dikkat Edilmesi Gerekenler
+                  </h4>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-amber-50/70 p-4 rounded-2xl border-l-4 border-amber-500">
+                    {selectedPlant.commonIssues}
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-4 space-y-3">
+                <button
+                  onClick={() => waterPlant(selectedPlant.id)}
+                  className="w-full bg-[#2D6A4F] text-white py-4 rounded-3xl font-black text-lg shadow-xl hover:shadow-2xl transition-all active:scale-[0.98]"
+                >
+                  💧 SULANDI OLARAK İŞARETLE
+                </button>
+
+                <button
+                  onClick={() => deletePlant(selectedPlant.id)}
+                  className="w-full text-red-400 text-xs font-bold py-4 flex items-center justify-center gap-1 hover:text-red-500 transition-colors"
+                >
+                  <Trash2 size={14} /> Bitkiyi Sil
+                </button>
+              </div>
             </div>
           </div>
         )}

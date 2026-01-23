@@ -164,7 +164,7 @@ export default function App() {
       {view === 'home' && (
         <div className="bg-white px-6 pt-14 pb-4 flex justify-between items-center border-b border-slate-50">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Çiçeğim Logo" className="w-12 h-12 rounded-2xl" />
+            <img src="/cicegim-logo.jpg" alt="Çiçeğim Logo" className="w-14 h-14 rounded-2xl shadow-md object-cover" />
             <div>
               <h1 className="text-2xl font-black text-[#1B4332]">Çiçeğim</h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gemini AI Destekli</p>
@@ -222,18 +222,16 @@ export default function App() {
                       <h4 className="font-bold truncate">{plant.commonName}</h4>
                       <p className="text-xs text-slate-400 italic truncate">{plant.scientificName}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                          getWateringStatus(plant) === 'urgent' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'
-                        }`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${getWateringStatus(plant) === 'urgent' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'
+                          }`}>
                           {getWateringStatus(plant) === 'urgent' ? 'SU ZAMANI' : 'İYİ'}
                         </span>
                       </div>
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); waterPlant(plant.id); }}
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                        getWateringStatus(plant) === 'urgent' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-50 text-slate-300'
-                      }`}
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${getWateringStatus(plant) === 'urgent' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-50 text-slate-300'
+                        }`}
                     >
                       <Droplets size={18} />
                     </button>

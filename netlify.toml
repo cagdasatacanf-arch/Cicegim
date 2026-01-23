@@ -1,3 +1,9 @@
 [build]
-  command = "git clone https://github.com/flutter/flutter.git -b stable && ./flutter/bin/flutter build web --release"
-  publish = "build/web"
+  base = "flora-app"
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

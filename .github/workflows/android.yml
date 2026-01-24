@@ -15,15 +15,15 @@ jobs:
           channel: 'stable'
           
       - name: Bağımlılıkları Yükle
-        working-directory: ./Cicegim  # <-- Düzeltildi
+        working-directory: ./cicegim_flutter
         run: flutter pub get
-        
+
       - name: APK Oluştur
-        working-directory: ./Cicegim  # <-- Düzeltildi
+        working-directory: ./cicegim_flutter
         run: flutter build apk --release --no-tree-shake-icons
-        
+
       - name: APK'yı Yükle (İndirilebilir Yap)
         uses: actions/upload-artifact@v3
         with:
           name: cicegim-apk
-          path: Cicegim/build/app/outputs/flutter-apk/app-release.apk # <-- Düzeltildi
+          path: cicegim_flutter/build/app/outputs/flutter-apk/app-release.apk

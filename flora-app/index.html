@@ -2,13 +2,50 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Gemini AI destekli bitki bakım ve tanıma uygulaması" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- SEO & Description -->
+    <meta name="description" content="Gemini AI destekli bitki bakım ve tanıma uygulaması. Bitkilerinizi fotoğraflayın ve AI ile tanımlayın." />
+    <meta name="keywords" content="bitki bakımı, çiçek, AI, yapay zeka, Gemini, bitki tanıma" />
+    <meta name="author" content="Çiçeğim" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1B4332" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Çiçeğim" />
+    
+    <!-- Apple PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Çiçeğim" />
+    <link rel="apple-touch-icon" href="/cicegim-logo.jpg" />
+    
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/jpeg" href="/cicegim-logo.jpg" />
+    <link rel="shortcut icon" href="/cicegim-logo.jpg" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
     <title>Çiçeğim - AI Bitki Bakım Asistanı</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('Çiçeğim SW registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('Çiçeğim SW registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

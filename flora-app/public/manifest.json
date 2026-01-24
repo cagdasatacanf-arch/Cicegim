@@ -1,0 +1,45 @@
+{
+    "name": "Çiçeğim - AI Bitki Bakım Asistanı",
+    "short_name": "Çiçeğim",
+    "description": "Gemini AI destekli bitki bakım ve tanıma uygulaması. Bitkilerinizi fotoğraflayın, AI ile tanımlayın ve bakım takvimi oluşturun.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1B4332",
+    "theme_color": "#1B4332",
+    "orientation": "portrait",
+    "scope": "/",
+    "lang": "tr",
+    "categories": [
+        "lifestyle",
+        "utilities"
+    ],
+    "icons": [
+        {
+            "src": "/cicegim-logo.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "/cicegim-logo.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Bitki Ekle",
+            "short_name": "Ekle",
+            "description": "Yeni bitki fotoğrafla ve ekle",
+            "url": "/?action=add",
+            "icons": [
+                {
+                    "src": "/cicegim-logo.jpg",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

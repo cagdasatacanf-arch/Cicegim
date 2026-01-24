@@ -4,7 +4,8 @@ import {
   CheckCircle2, AlertCircle, ChevronRight, ChevronLeft,
   ArrowLeft, Trash2, ShieldCheck, Thermometer, Sun,
   Loader2, RefreshCcw, Calendar, Info, X, Image,
-  Home, Flower2, Check, Sparkles, Share2, Scissors, Sprout, ShoppingCart, Activity
+  Home, Flower2, Check, Sparkles, Share2, Scissors, Sprout, ShoppingCart, Activity,
+  Cloud, CloudRain, Snowflake, SunMedium, Clock, MapPin, RotateCcw, User
 } from 'lucide-react';
 
 // --- GEMINI API AYARLARI ---
@@ -122,8 +123,88 @@ export default function App() {
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [skippedTasks, setSkippedTasks] = useState([]);
+  const [seasonMode, setSeasonMode] = useState(() => {
+    // Determine season based on current month
+    const month = new Date().getMonth();
+    return (month >= 10 || month <= 2) ? 'winter' : 'summer';
+  });
+  const [taskFilter, setTaskFilter] = useState('all'); // 'all', 'urgent', 'upcoming', 'done'
+  const [weather, setWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
+
+  // Weather API - Open-Meteo (Free, no API key needed)
+  const fetchWeather = async () => {
+    setWeatherLoading(true);
+    try {
+      // Try to get user's location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            const response = await fetch(
+              `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`
+            );
+            const data = await response.json();
+
+            // Weather codes: 0-3 clear, 45-48 fog, 51-67 rain/drizzle, 71-77 snow, 80-99 showers
+            const code = data.current?.weather_code || 0;
+            const isRainy = code >= 51 && code <= 99;
+            const temp = Math.round(data.current?.temperature_2m || 20);
+
+            setWeather({
+              temp,
+              isRainy,
+              condition: isRainy ? 'Yağmurlu' : code >= 71 ? 'Karlı' : code >= 45 ? 'Sisli' : 'Açık',
+              code
+            });
+            setWeatherLoading(false);
+          },
+          () => {
+            // Geolocation failed, use default (Istanbul)
+            fetchWeatherDefault();
+          }
+        );
+      } else {
+        fetchWeatherDefault();
+      }
+    } catch (err) {
+      console.error('Weather fetch error:', err);
+      setWeatherLoading(false);
+    }
+  };
+
+  const fetchWeatherDefault = async () => {
+    try {
+      // Default to Istanbul coordinates
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current=temperature_2m,weather_code&timezone=auto`
+      );
+      const data = await response.json();
+      const code = data.current?.weather_code || 0;
+      const isRainy = code >= 51 && code <= 99;
+      const temp = Math.round(data.current?.temperature_2m || 20);
+
+      setWeather({
+        temp,
+        isRainy,
+        condition: isRainy ? 'Yağmurlu' : code >= 71 ? 'Karlı' : code >= 45 ? 'Sisli' : 'Açık',
+        code
+      });
+    } catch (err) {
+      console.error('Weather default fetch error:', err);
+    }
+    setWeatherLoading(false);
+  };
+
+  // Fetch weather when schedule view is opened
+  useEffect(() => {
+    if (view === 'schedule' && !weather) {
+      fetchWeather();
+    }
+  }, [view]);
 
   useEffect(() => {
     localStorage.setItem('cicegim_gemini_db', JSON.stringify(plants));
@@ -485,138 +566,317 @@ export default function App() {
           </div>
         )}
 
-        {/* SULAMA TAKVİMİ (WATERING SCHEDULE) VIEW */}
+        {/* AKILLI SULAMA TAKVİMİ (SMART WATERING CALENDAR) VIEW */}
         {view === 'schedule' && (
-          <div className="animate-in slide-in-from-right duration-300 bg-white min-h-screen">
+          <div className="animate-in slide-in-from-right duration-300 bg-[#0D1F17] min-h-screen">
             {/* Header */}
-            <div className="bg-white px-6 pt-14 pb-4 flex justify-between items-center border-b border-slate-100">
+            <div className="bg-[#0D1F17] px-6 pt-14 pb-4 flex justify-between items-center">
               <button
                 onClick={() => setView('home')}
-                className="w-10 h-10 flex items-center justify-center text-slate-600 hover:text-slate-800"
+                className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white"
               >
                 <ChevronLeft size={24} />
               </button>
-              <h1 className="text-xl font-bold text-slate-800">Sulama Takvimi</h1>
-              <button className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-600 transition-colors">
-                <Plus size={20} />
+              <h1 className="text-xl font-bold text-white">Çiçeğim Takvim</h1>
+              <button className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white">
+                <User size={20} />
               </button>
             </div>
 
-            {/* Calendar Section */}
-            <div className="p-6">
-              {/* Month Navigation */}
-              <div className="flex items-center justify-between mb-6">
-                <button
-                  onClick={() => changeMonth(-1)}
-                  className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <h2 className="text-lg font-bold text-slate-800">{getTurkishMonth(selectedDate)}</h2>
-                <button
-                  onClick={() => changeMonth(1)}
-                  className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600"
-                >
-                  <ChevronRight size={20} />
-                </button>
+            {/* Month & Week Navigation */}
+            <div className="px-6 pb-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-white">{getTurkishMonth(selectedDate)}</h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => changeMonth(-1)}
+                    className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={() => changeMonth(1)}
+                    className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
               </div>
 
-              {/* Day Headers */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {['PZR', 'PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT'].map(day => (
-                  <div key={day} className="text-center text-xs font-bold text-slate-400 py-2">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-1">
+              {/* Horizontal Week View */}
+              <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
                 {(() => {
-                  const { firstDay, daysInMonth } = getDaysInMonth(selectedDate);
                   const today = new Date();
-                  const isCurrentMonth = today.getMonth() === selectedDate.getMonth() && today.getFullYear() === selectedDate.getFullYear();
-                  const cells = [];
+                  const weekDays = [];
+                  const dayNames = ['PZR', 'PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT'];
 
-                  // Empty cells for days before first day of month
-                  for (let i = 0; i < firstDay; i++) {
-                    cells.push(<div key={`empty-${i}`} className="h-10"></div>);
-                  }
+                  // Show current week (3 days before, today, 3 days after)
+                  for (let i = -3; i <= 3; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    const dayNum = date.getDate();
+                    const dayName = dayNames[date.getDay()];
+                    const isToday = i === 0;
 
-                  // Day cells
-                  for (let day = 1; day <= daysInMonth; day++) {
-                    const isToday = isCurrentMonth && today.getDate() === day;
-                    const hasTasks = getDateHasTasks(day);
+                    // Check task status for this day
+                    const tasksForDay = plants.filter(plant => {
+                      const lastWatered = new Date(plant.lastWatered);
+                      const nextWatering = new Date(lastWatered);
+                      const interval = seasonMode === 'winter'
+                        ? Math.ceil(plant.wateringInterval * 1.5)
+                        : plant.wateringInterval;
+                      nextWatering.setDate(nextWatering.getDate() + interval);
+                      return nextWatering.toDateString() === date.toDateString();
+                    });
 
-                    cells.push(
+                    const hasUrgent = tasksForDay.some(p => getWateringStatus(p) === 'urgent');
+                    const hasDone = tasksForDay.some(p => completedTasks.includes(p.id));
+                    const hasTask = tasksForDay.length > 0;
+
+                    // Determine dot color
+                    let dotColor = '';
+                    if (hasDone) dotColor = 'bg-green-500';
+                    else if (hasUrgent) dotColor = 'bg-red-500';
+                    else if (hasTask) dotColor = 'bg-yellow-500';
+
+                    weekDays.push(
                       <div
-                        key={day}
-                        className={`h-10 flex flex-col items-center justify-center rounded-full cursor-pointer transition-all ${isToday
-                          ? 'bg-blue-500 text-white font-bold shadow-lg'
-                          : 'text-slate-700 hover:bg-slate-100'
+                        key={i}
+                        className={`flex flex-col items-center min-w-[50px] py-2 px-3 rounded-2xl transition-all ${isToday
+                            ? 'bg-[#2D6A4F] text-white'
+                            : 'text-white/60 hover:bg-white/5'
                           }`}
                       >
-                        <span className="text-sm">{day}</span>
-                        {hasTasks && !isToday && (
-                          <div className="w-1 h-1 bg-blue-500 rounded-full mt-0.5"></div>
+                        <span className="text-xs font-medium mb-1">{dayName}</span>
+                        <span className={`text-lg font-bold ${isToday ? 'text-white' : ''}`}>{dayNum}</span>
+                        {dotColor && (
+                          <div className={`w-2 h-2 ${dotColor} rounded-full mt-1`}></div>
                         )}
                       </div>
                     );
                   }
-
-                  return cells;
+                  return weekDays;
                 })()}
               </div>
             </div>
 
-            {/* Tasks for Today */}
-            <div className="px-6 pb-32">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-800">Bugünün Görevleri</h3>
-                <span className="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">
-                  {getTodaysTasks().length} GÖREV
-                </span>
+            {/* Filter Chips */}
+            <div className="px-6 pb-4">
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                <button
+                  onClick={() => setTaskFilter('urgent')}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'urgent'
+                      ? 'bg-red-500/20 text-red-400 border border-red-500/50'
+                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    }`}
+                >
+                  <AlertCircle size={14} />
+                  Acil
+                </button>
+                <button
+                  onClick={() => setTaskFilter('upcoming')}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'upcoming'
+                      ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
+                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    }`}
+                >
+                  <Clock size={14} />
+                  Yaklaşan
+                </button>
+                <button
+                  onClick={() => setTaskFilter('done')}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'done'
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    }`}
+                >
+                  <Check size={14} />
+                  Tamamlandı
+                </button>
               </div>
+            </div>
 
-              {getTodaysTasks().length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-3xl">
-                  <Sparkles className="mx-auto text-green-400 mb-3" size={40} />
-                  <p className="text-slate-500 font-medium">Bugün görev yok!</p>
-                  <p className="text-slate-400 text-sm mt-1">Tüm bitkileriniz bakımlı</p>
+            {/* Weather Card */}
+            <div className="px-6 pb-4">
+              <div className="bg-[#1A3328] rounded-2xl p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  {weatherLoading ? (
+                    <Loader2 className="animate-spin text-white/50" size={24} />
+                  ) : weather?.isRainy ? (
+                    <CloudRain className="text-blue-400" size={24} />
+                  ) : (
+                    <Cloud className="text-white/70" size={24} />
+                  )}
+                  <span className="text-white font-bold">
+                    {weather ? `${weather.condition} - ${weather.temp}°C` : 'Hava durumu yükleniyor...'}
+                  </span>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {getTodaysTasks().map(task => (
-                    <div
-                      key={task.id}
-                      className={`bg-white border border-slate-100 p-4 rounded-2xl flex items-center gap-4 shadow-sm transition-all ${completedTasks.includes(task.id) ? 'opacity-50' : ''
-                        }`}
-                    >
-                      <img
-                        src={task.image}
-                        alt={task.commonName}
-                        className="w-14 h-14 rounded-xl object-cover"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-slate-800 truncate">{task.commonName}</h4>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Droplets size={14} className="text-blue-500" />
-                          <span className="text-sm text-slate-500">{task.taskType}</span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => toggleTaskComplete(task.id)}
-                        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${completedTasks.includes(task.id)
-                          ? 'bg-green-500 border-green-500 text-white'
-                          : 'border-blue-300 hover:border-blue-500'
+                {weather?.isRainy && (
+                  <p className="text-white/60 text-sm mb-3">
+                    AI: Dış mekan balkon bitkileri için sulama duraklatıldı
+                  </p>
+                )}
+                <button
+                  onClick={fetchWeather}
+                  className="bg-[#2D6A4F] text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-[#3D7A5F] transition-colors"
+                >
+                  Detaylar
+                </button>
+              </div>
+            </div>
+
+            {/* Today's Tasks */}
+            <div className="px-6 pb-40">
+              <h3 className="text-xl font-bold text-white mb-4">Bugünün Görevleri</h3>
+
+              {(() => {
+                const allTasks = getTodaysTasks().map(task => ({
+                  ...task,
+                  isOutdoor: task.lightRequirement?.toLowerCase().includes('güneş') ||
+                    task.lightRequirement?.toLowerCase().includes('outdoor') ||
+                    task.origin?.toLowerCase().includes('bahçe'),
+                  isSkipped: skippedTasks.includes(task.id),
+                  isCompleted: completedTasks.includes(task.id),
+                  waterAmount: Math.round(150 + Math.random() * 150) // Simulated water amount
+                }));
+
+                // Apply filter
+                let filteredTasks = allTasks;
+                if (taskFilter === 'urgent') {
+                  filteredTasks = allTasks.filter(t => getWateringStatus(t) === 'urgent' && !t.isCompleted);
+                } else if (taskFilter === 'upcoming') {
+                  filteredTasks = allTasks.filter(t => getWateringStatus(t) !== 'urgent' && !t.isCompleted);
+                } else if (taskFilter === 'done') {
+                  filteredTasks = allTasks.filter(t => t.isCompleted);
+                }
+
+                if (filteredTasks.length === 0) {
+                  return (
+                    <div className="text-center py-12 bg-[#1A3328] rounded-3xl">
+                      <Sparkles className="mx-auto text-green-400 mb-3" size={40} />
+                      <p className="text-white/70 font-medium">
+                        {taskFilter === 'done' ? 'Henüz tamamlanan görev yok' :
+                          taskFilter === 'urgent' ? 'Acil görev yok!' :
+                            taskFilter === 'upcoming' ? 'Yaklaşan görev yok' :
+                              'Bugün görev yok!'}
+                      </p>
+                      <p className="text-white/40 text-sm mt-1">
+                        {taskFilter === 'all' && 'Tüm bitkileriniz bakımlı'}
+                      </p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="space-y-3">
+                    {filteredTasks.map(task => (
+                      <div
+                        key={task.id}
+                        className={`bg-[#1A3328] rounded-2xl overflow-hidden transition-all ${task.isCompleted ? 'opacity-60' : ''
                           }`}
                       >
-                        {completedTasks.includes(task.id) && <Check size={16} />}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                        <div className="p-4 flex items-center gap-4">
+                          <img
+                            src={task.image}
+                            alt={task.commonName}
+                            className="w-14 h-14 rounded-xl object-cover"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-bold text-white truncate">{task.commonName}</h4>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${task.isOutdoor
+                                  ? 'bg-orange-500/20 text-orange-400'
+                                  : 'bg-green-500/20 text-green-400'
+                                }`}>
+                                {task.isOutdoor ? 'DIŞ MEKAN' : 'İÇ MEKAN'}
+                              </span>
+                            </div>
+                            <p className="text-sm text-white/50">
+                              {task.isCompleted
+                                ? `Tamamlandı: ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`
+                                : task.isSkipped
+                                  ? 'Yağmur nedeniyle atlandı'
+                                  : weather?.isRainy && task.isOutdoor
+                                    ? 'Yağmur nedeniyle atlandı'
+                                    : `Şimdi ${task.waterAmount}ml su gerekiyor`
+                              }
+                            </p>
+                          </div>
+                          {task.isCompleted && (
+                            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                              <Check size={18} className="text-white" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        {!task.isCompleted && (
+                          <div className="px-4 pb-4">
+                            {(weather?.isRainy && task.isOutdoor) || task.isSkipped ? (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => setSkippedTasks([...skippedTasks, task.id])}
+                                  className="flex-1 bg-white/10 text-white/70 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors"
+                                >
+                                  Atla (Yağmur)
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSkippedTasks(skippedTasks.filter(id => id !== task.id));
+                                  }}
+                                  className="flex-1 bg-white/10 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors"
+                                >
+                                  Yeniden Planla
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  waterPlant(task.id);
+                                  toggleTaskComplete(task.id);
+                                }}
+                                className="w-full bg-[#4ADE80] text-[#0D1F17] py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#5AEE90] transition-colors active:scale-[0.98]"
+                              >
+                                <Droplets size={18} />
+                                Şimdi Sula
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Seasonal Mode Toggle - Fixed Bottom */}
+            <div className="fixed bottom-24 left-0 right-0 max-w-md mx-auto px-6 z-30">
+              <div className="bg-[#1A3328] rounded-2xl p-1 flex">
+                <button
+                  onClick={() => setSeasonMode('winter')}
+                  className={`flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${seasonMode === 'winter'
+                      ? 'bg-[#2D6A4F] text-white'
+                      : 'text-white/50 hover:text-white/70'
+                    }`}
+                >
+                  <Snowflake size={16} />
+                  Kış Modu
+                </button>
+                <button
+                  onClick={() => setSeasonMode('summer')}
+                  className={`flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${seasonMode === 'summer'
+                      ? 'bg-[#2D6A4F] text-white'
+                      : 'text-white/50 hover:text-white/70'
+                    }`}
+                >
+                  <SunMedium size={16} />
+                  Yaz Modu
+                </button>
+              </div>
+              <p className="text-center text-white/30 text-xs mt-2 uppercase tracking-wider">
+                AI MEVSİME GÖRE SULAMA SIKLIĞINI AYARLIYOR
+              </p>
             </div>
           </div>
         )}

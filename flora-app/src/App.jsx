@@ -10,7 +10,7 @@ import {
 
 // --- GEMINI API AYARLARI ---
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
-const GEMINI_MODEL = "gemini-1.5-flash";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 /**
  * GEMINI API SERVİSİ

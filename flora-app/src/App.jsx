@@ -10,7 +10,7 @@ import {
 
 // --- GEMINI API AYARLARI ---
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
-const GEMINI_MODEL = "gemini-2.0-flash-exp";
+const GEMINI_MODEL = "gemini-1.5-flash";
 
 /**
  * GEMINI API SERVİSİ
@@ -643,8 +643,8 @@ export default function App() {
                       <div
                         key={i}
                         className={`flex flex-col items-center min-w-[50px] py-2 px-3 rounded-2xl transition-all ${isToday
-                            ? 'bg-[#2D6A4F] text-white'
-                            : 'text-white/60 hover:bg-white/5'
+                          ? 'bg-[#2D6A4F] text-white'
+                          : 'text-white/60 hover:bg-white/5'
                           }`}
                       >
                         <span className="text-xs font-medium mb-1">{dayName}</span>
@@ -666,8 +666,8 @@ export default function App() {
                 <button
                   onClick={() => setTaskFilter('urgent')}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'urgent'
-                      ? 'bg-red-500/20 text-red-400 border border-red-500/50'
-                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    ? 'bg-red-500/20 text-red-400 border border-red-500/50'
+                    : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
                     }`}
                 >
                   <AlertCircle size={14} />
@@ -676,8 +676,8 @@ export default function App() {
                 <button
                   onClick={() => setTaskFilter('upcoming')}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'upcoming'
-                      ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
+                    : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
                     }`}
                 >
                   <Clock size={14} />
@@ -686,8 +686,8 @@ export default function App() {
                 <button
                   onClick={() => setTaskFilter('done')}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${taskFilter === 'done'
-                      ? 'bg-green-500/20 text-green-400 border border-green-500/50'
-                      : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                    : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
                     }`}
                 >
                   <Check size={14} />
@@ -785,8 +785,8 @@ export default function App() {
                             <div className="flex items-center gap-2 mb-1">
                               <h4 className="font-bold text-white truncate">{task.commonName}</h4>
                               <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${task.isOutdoor
-                                  ? 'bg-orange-500/20 text-orange-400'
-                                  : 'bg-green-500/20 text-green-400'
+                                ? 'bg-orange-500/20 text-orange-400'
+                                : 'bg-green-500/20 text-green-400'
                                 }`}>
                                 {task.isOutdoor ? 'DIŞ MEKAN' : 'İÇ MEKAN'}
                               </span>
@@ -856,8 +856,8 @@ export default function App() {
                 <button
                   onClick={() => setSeasonMode('winter')}
                   className={`flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${seasonMode === 'winter'
-                      ? 'bg-[#2D6A4F] text-white'
-                      : 'text-white/50 hover:text-white/70'
+                    ? 'bg-[#2D6A4F] text-white'
+                    : 'text-white/50 hover:text-white/70'
                     }`}
                 >
                   <Snowflake size={16} />
@@ -866,8 +866,8 @@ export default function App() {
                 <button
                   onClick={() => setSeasonMode('summer')}
                   className={`flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${seasonMode === 'summer'
-                      ? 'bg-[#2D6A4F] text-white'
-                      : 'text-white/50 hover:text-white/70'
+                    ? 'bg-[#2D6A4F] text-white'
+                    : 'text-white/50 hover:text-white/70'
                     }`}
                 >
                   <SunMedium size={16} />

@@ -1,0 +1,276 @@
+.pc-page {
+    padding-bottom: 80px;
+}
+
+/* Header */
+.pc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.pc-title {
+    font-size: var(--font-xl);
+    font-weight: 800;
+}
+
+/* Stats */
+.pc-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.pc-stat-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pc-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pc-stat-value {
+    font-size: var(--font-xl);
+    font-weight: 800;
+}
+
+.pc-stat-unit {
+    font-size: var(--font-md);
+    font-weight: 600;
+}
+
+.pc-stat-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.pc-stat-blue {
+    color: var(--accent-blue);
+}
+
+.pc-stat-orange {
+    color: #F97316;
+}
+
+/* Sector */
+.pc-sector {
+    margin-bottom: var(--space-lg);
+}
+
+.pc-sector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.pc-sector-name {
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pc-sector-count {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+/* Ticker card */
+.pc-ticker-card {
+    margin-bottom: var(--space-md);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.pc-ticker-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pc-ticker-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.pc-ticker-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pc-ticker-info {
+    flex: 1;
+}
+
+.pc-ticker-symbol {
+    display: block;
+    font-size: var(--font-base);
+    font-weight: 800;
+}
+
+.pc-ticker-name {
+    display: block;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.pc-ticker-right {
+    text-align: right;
+}
+
+/* Status badges */
+.pc-status-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+}
+
+.pc-status-draft {
+    color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.pc-status-published {
+    color: var(--accent-green);
+    background: rgba(16, 185, 129, 0.12);
+}
+
+.pc-status-reviewing {
+    color: #F97316;
+    background: rgba(249, 115, 22, 0.12);
+}
+
+.pc-ticker-change {
+    display: block;
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-top: 2px;
+}
+
+/* Progress bar */
+.pc-progress-section {
+    margin-bottom: var(--space-md);
+}
+
+.pc-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.pc-progress-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pc-progress-value {
+    font-size: var(--font-xs);
+    font-weight: 700;
+}
+
+.pc-progress-bar {
+    display: flex;
+    gap: 3px;
+}
+
+.pc-progress-segment {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+/* Footer */
+.pc-ticker-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.pc-ticker-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.pc-ticker-due {
+    color: #F97316;
+}
+
+.pc-ticker-analyst {
+    margin-left: auto;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+/* FAB */
+.pc-fab {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 215px + 20px);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-glow-blue);
+    z-index: 50;
+    transition: transform 0.2s;
+}
+
+.pc-fab:hover {
+    transform: scale(1.1);
+}
+
+/* Bottom nav */
+.pc-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--max-width);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: var(--nav-height);
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-subtle);
+    z-index: 100;
+}

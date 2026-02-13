@@ -1,0 +1,272 @@
+.rk-page {
+    padding-bottom: 80px;
+}
+
+.rk-bookmark {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    cursor: pointer;
+}
+
+/* Risk Matrix */
+.rk-matrix-card {
+    margin-bottom: var(--space-lg);
+}
+
+.rk-matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.rk-matrix-title {
+    font-size: var(--font-base);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rk-auto-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: var(--accent-blue-dim);
+}
+
+.rk-matrix-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.rk-matrix-y-label {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.rk-matrix-grid {
+    flex: 1;
+}
+
+.rk-matrix-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.rk-matrix-row-label {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.rk-matrix-cell {
+    flex: 1;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+}
+
+.rk-matrix-icon {
+    opacity: 0.9;
+}
+
+.rk-matrix-x-labels {
+    display: flex;
+    gap: 4px;
+}
+
+.rk-matrix-x-labels span:first-child {
+    width: 20px;
+}
+
+.rk-matrix-col-label {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding-top: 4px;
+}
+
+.rk-matrix-x-title {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: var(--space-xs);
+}
+
+/* Section Header */
+.rk-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.rk-section-title {
+    font-size: var(--font-md);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rk-add-risk {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    font-family: var(--font-family);
+    font-size: var(--font-xs);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Risk Card */
+.rk-risk-card {
+    margin-bottom: var(--space-md);
+}
+
+.rk-risk-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.rk-risk-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rk-risk-info {
+    flex: 1;
+}
+
+.rk-risk-title {
+    display: block;
+    font-size: var(--font-base);
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.rk-risk-category {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.rk-risk-more {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* Selectors */
+.rk-selectors {
+    margin-bottom: var(--space-md);
+}
+
+.rk-selector-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+}
+
+.rk-selector-label {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.rk-selector-row {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.rk-selector-btns {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+}
+
+.rk-sel-btn {
+    flex: 1;
+    padding: 8px 0;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.rk-sel-active {
+    color: white;
+    border-color: transparent;
+}
+
+/* Mitigation */
+.rk-mitigation {
+    margin-top: var(--space-sm);
+}
+
+.rk-mit-label {
+    display: block;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-sm);
+}
+
+.rk-mit-text {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding: var(--space-md);
+    background: var(--bg-elevated);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Alert center button */
+.rk-subnav-alert {
+    background: linear-gradient(135deg, #EF4444, #F97316) !important;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3) !important;
+}

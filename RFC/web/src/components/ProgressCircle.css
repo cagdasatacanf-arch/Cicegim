@@ -1,0 +1,23 @@
+.progress-circle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-bg {
+    fill: none;
+    stroke: var(--border-subtle);
+}
+
+.progress-bar {
+    fill: none;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease;
+}
+
+.progress-value {
+    position: absolute;
+    font-size: var(--font-sm);
+    font-weight: 700;
+}

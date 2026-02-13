@@ -1,0 +1,227 @@
+.vc-page {
+    padding-bottom: 40px;
+}
+
+/* Top bar */
+.vc-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.vc-top-center {
+    text-align: center;
+}
+
+.vc-title {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.vc-versions {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+}
+
+.vc-vs {
+    color: var(--accent-blue);
+    font-weight: 600;
+    margin: 0 4px;
+}
+
+/* Section labels */
+.vc-section-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.vc-latest-diff {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+/* Key changes */
+.vc-key-changes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-sm);
+}
+
+.vc-kc-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vc-kc-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.vc-kc-value {
+    font-size: var(--font-lg);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vc-kc-blue {
+    color: var(--accent-blue);
+}
+
+.vc-kc-quote {
+    font-size: 24px;
+    color: var(--accent-blue);
+}
+
+.vc-kc-sparkle {
+    font-size: 16px;
+}
+
+/* Sections */
+.vc-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.vc-sec-item {
+    padding: 0;
+    overflow: hidden;
+}
+
+.vc-sec-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vc-sec-header:hover {
+    background: var(--bg-elevated);
+}
+
+.vc-sec-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--accent-blue-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.vc-sec-info {
+    flex: 1;
+}
+
+.vc-sec-title {
+    display: block;
+    font-size: var(--font-base);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.vc-sec-status {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.vc-status-updated {
+    color: var(--accent-green);
+}
+
+.vc-status-none {
+    color: var(--text-muted);
+}
+
+.vc-sec-chevron {
+    color: var(--text-muted);
+    transition: transform 0.25s;
+}
+
+.vc-chevron-open {
+    transform: rotate(180deg);
+}
+
+/* Diff content */
+.vc-sec-content {
+    padding: 0 var(--space-lg) var(--space-lg) calc(36px + var(--space-lg) + var(--space-md));
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.vc-sec-content del {
+    color: var(--accent-red);
+    text-decoration: line-through;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.vc-sec-content ins {
+    color: var(--accent-blue);
+    text-decoration: none;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+/* Action buttons */
+.vc-promote-btn {
+    width: 100%;
+    margin-top: var(--space-xl);
+    padding: var(--space-md) 0;
+    font-weight: 700;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.vc-restore-btn {
+    width: 100%;
+    margin-top: var(--space-md);
+    padding: var(--space-md) 0;
+    background: none;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-base);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    transition: all 0.2s;
+}
+
+.vc-restore-btn:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}

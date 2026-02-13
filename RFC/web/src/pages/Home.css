@@ -1,0 +1,73 @@
+.greeting-section {
+    margin-bottom: var(--space-sm);
+}
+
+.greeting-section h1 {
+    margin-bottom: var(--space-xs);
+}
+
+.greeting-section p {
+    font-size: var(--font-base);
+}
+
+/* Frameworks horizontal scroll */
+.frameworks-scroll {
+    display: flex;
+    gap: var(--space-md);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.frameworks-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.framework-settings-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.framework-settings-btn:hover {
+    color: var(--text-secondary);
+}
+
+/* Log list */
+.log-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md) var(--space-lg);
+}
+
+/* Loading state */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    padding: 80px 0;
+    color: var(--text-muted);
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border-subtle);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

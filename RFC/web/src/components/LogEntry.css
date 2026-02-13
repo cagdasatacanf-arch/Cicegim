@@ -1,0 +1,52 @@
+.log-entry {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+}
+
+.log-entry+.log-entry {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.log-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.log-dot-blue {
+    background: var(--accent-blue);
+}
+
+.log-dot-green {
+    background: var(--accent-green);
+}
+
+.log-dot-yellow {
+    background: var(--accent-yellow);
+}
+
+.log-dot-red {
+    background: var(--accent-red);
+}
+
+.log-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.log-message {
+    font-size: var(--font-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.log-meta {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+}

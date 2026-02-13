@@ -1,0 +1,68 @@
+.models-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.model-card {
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.model-active {
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.1);
+}
+
+.model-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.model-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+}
+
+.model-name {
+    font-size: var(--font-md);
+    font-weight: 600;
+}
+
+.model-provider {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.model-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.model-active-indicator {
+    display: flex;
+    align-items: center;
+}
+
+/* API Configuration */
+.api-config {
+    margin-top: var(--space-sm);
+}
+
+.api-key-input-wrap {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.api-key-input-wrap .input {
+    flex: 1;
+}
+
+.api-key-toggle {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    font-size: var(--font-sm);
+}

@@ -1,0 +1,336 @@
+.fd-page {
+    padding-bottom: 80px;
+}
+
+/* Top bar */
+.fd-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.fd-back {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+}
+
+.fd-back:hover {
+    color: var(--text-primary);
+}
+
+.fd-title {
+    flex: 1;
+    font-size: var(--font-lg);
+}
+
+.fd-save-btn {
+    padding: 8px 18px;
+    font-size: var(--font-sm);
+    border-radius: var(--radius-full);
+}
+
+/* Stats row */
+.fd-stats {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.fd-stat {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fd-stat-label {
+    font-size: var(--font-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+
+.fd-stat-value {
+    font-size: var(--font-lg);
+    font-weight: 700;
+}
+
+/* Asset cards */
+.fd-asset-card {
+    margin-bottom: var(--space-md);
+}
+
+.fd-asset-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.fd-asset-title {
+    font-size: var(--font-base);
+    font-weight: 600;
+}
+
+.fd-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.fd-tag {
+    padding: 5px 12px;
+    background: var(--accent-blue-dim);
+    color: var(--accent-blue);
+    border-radius: var(--radius-full);
+    font-size: var(--font-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.fd-tag-dark {
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+}
+
+.fd-tag-more {
+    background: transparent;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+/* Override toggle */
+.fd-override-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--accent-blue-dim);
+    border-color: var(--border-accent);
+    margin-bottom: var(--space-lg);
+}
+
+.fd-override-title {
+    font-size: var(--font-base);
+    font-weight: 600;
+    display: block;
+}
+
+.fd-override-sub {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.fd-toggle {
+    width: 48px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--bg-elevated);
+    border: 2px solid var(--border-default);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s;
+    flex-shrink: 0;
+}
+
+.fd-toggle-on {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.fd-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.25s;
+}
+
+.fd-toggle-on .fd-toggle-knob {
+    transform: translateX(22px);
+}
+
+/* Sections */
+.fd-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.fd-section {
+    padding: var(--space-lg);
+}
+
+.fd-section-override {
+    border-left: 3px solid var(--accent-blue);
+}
+
+.fd-section-top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.fd-section-id {
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--accent-blue);
+    opacity: 0.6;
+}
+
+.fd-section-name {
+    flex: 1;
+    font-size: var(--font-base);
+    font-weight: 600;
+}
+
+.fd-section-menu {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.fd-section-meta {
+    display: flex;
+    gap: var(--space-xl);
+    margin-left: 36px;
+}
+
+.fd-section-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.fd-section-override-tag {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+    margin-left: 36px;
+    font-size: var(--font-xs);
+    color: var(--accent-blue);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.fd-override-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+}
+
+/* Filter button */
+.fd-filter-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+}
+
+/* Show more */
+.fd-show-more {
+    display: block;
+    width: 100%;
+    padding: var(--space-lg);
+    margin-top: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fd-show-more:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+}
+
+/* Add button */
+.fd-add-btn {
+    position: fixed;
+    bottom: 80px;
+    right: calc(50% - 215px + 20px);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-glow-blue);
+    transition: transform 0.2s;
+    z-index: 50;
+}
+
+.fd-add-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Sub navigation */
+.fd-subnav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--max-width);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: var(--nav-height);
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-subtle);
+    z-index: 100;
+}
+
+.fd-subnav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-family);
+    font-size: var(--font-xs);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.fd-subnav-item:hover {
+    color: var(--text-secondary);
+}
+
+.fd-subnav-active {
+    color: var(--accent-blue);
+}

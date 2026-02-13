@@ -1,0 +1,303 @@
+.se-page {
+    padding-bottom: 24px;
+}
+
+/* Top bar */
+.se-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.se-top-center {
+    text-align: center;
+}
+
+.se-section-label {
+    display: block;
+    font-size: var(--font-base);
+    font-weight: 700;
+}
+
+.se-subtitle {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.se-top-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.se-preview-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid var(--accent-green);
+    border-radius: var(--radius-full);
+    color: var(--accent-green);
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.se-preview-btn:hover {
+    background: rgba(16, 185, 129, 0.2);
+}
+
+/* Topic header */
+.se-topic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.se-topic-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.se-topic-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.se-clarity-label {
+    font-size: var(--font-xs);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.se-toggle-green.ds-toggle-on {
+    background: var(--accent-green) !important;
+}
+
+.se-topic-title {
+    font-size: var(--font-xl);
+    font-weight: 800;
+    margin-bottom: var(--space-lg);
+    line-height: 1.2;
+}
+
+/* Toolbar */
+.se-toolbar {
+    display: flex;
+    gap: 2px;
+    padding: var(--space-sm) 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.se-toolbar::-webkit-scrollbar {
+    display: none;
+}
+
+.se-tool-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+
+.se-tool-btn:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* Content area */
+.se-content-area {
+    min-height: 300px;
+    margin-bottom: var(--space-lg);
+}
+
+.se-text-block {
+    font-size: var(--font-base);
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: var(--space-lg);
+    outline: none;
+    cursor: text;
+    padding: var(--space-sm) 0;
+    border-radius: var(--radius-md);
+    transition: background 0.2s;
+}
+
+.se-text-block:focus {
+    background: rgba(59, 130, 246, 0.04);
+}
+
+/* Diagram placeholder */
+.se-diagram-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-xl) var(--space-lg);
+    border: 2px dashed var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+}
+
+.se-diagram-label {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+}
+
+.se-diagram-edit {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    font-family: var(--font-family);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* Stats bar */
+.se-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-top: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.se-stats-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.se-stats-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-family);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.se-words-count {
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--accent-blue);
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.se-words-bar-track {
+    width: 80px;
+    height: 6px;
+    background: var(--border-subtle);
+    border-radius: 3px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.se-words-bar-fill {
+    height: 100%;
+    background: var(--accent-green);
+    border-radius: 3px;
+    transition: width 0.4s;
+}
+
+/* Key terms */
+.se-key-terms-section {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.se-key-terms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.se-key-terms-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.se-add-term {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    font-family: var(--font-family);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.se-key-terms-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.se-key-term-chip {
+    background: var(--bg-elevated);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.se-key-term-chip:hover {
+    background: var(--accent-blue-dim);
+}
+
+.se-key-term-name {
+    font-size: var(--font-sm);
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+.se-key-term-action {
+    font-size: 10px;
+    color: var(--text-muted);
+}
